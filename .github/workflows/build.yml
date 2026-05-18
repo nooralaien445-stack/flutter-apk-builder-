@@ -2,16 +2,31 @@ name: Build Flutter APK
 
 on:
   workflow_dispatch:
+    inputs:
+      code:
+        description: 'Flutter code to build'
+        required: true
+        default: ''
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+
+      - name: Create Flutter project
+        run: |
+          cd ..
+          rm -rf flutter_project
+          flutter create flutter_project --empty
+          cd flutter_project
+          mkdir -p lib
+          cat << 'EOF' > lib/main.dart
+          ${{ github.event.inputs.code }}
+          EOF
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -21,14 +36,13 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install dependencies
-        run: flutter pub get
-
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          cd ../flutter_project
+          flutter build apk --release
 
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: app-release
+          path: ../flutter_project/build/app/outputs/flutter-apk/app-release.apk
