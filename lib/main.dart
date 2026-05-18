@@ -1,34 +1,30 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const TasbihApp());
+  runApp(const MyApp());
 }
 
-class TasbihApp extends StatelessWidget {
-  const TasbihApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'تطبيق السبحة الإلكترونية',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const TasbihScreen(),
+      theme: ThemeData(primarySwatch: Colors.green),
+      home: const SebhaPage(),
     );
   }
 }
 
-class TasbihScreen extends StatefulWidget {
-  const TasbihScreen({super.key});
+class SebhaPage extends StatefulWidget {
+  const SebhaPage({Key? key}) : super(key: key);
 
   @override
-  State<TasbihScreen> createState() => _TasbihScreenState();
+  _SebhaPageState createState() => _SebhaPageState();
 }
 
-class _TasbihScreenState extends State<TasbihScreen> {
+class _SebhaPageState extends State<SebhaPage> {
   int _counter = 0;
 
   void _incrementCounter() {
@@ -46,71 +42,64 @@ class _TasbihScreenState extends State<TasbihScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal[700],
       appBar: AppBar(
-        title: const Text(
-          'السبحة الإلكترونية',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.teal[800],
+        title: const Text('السبحة الإلكترونية', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
-        elevation: 0,
+        backgroundColor: Colors.green[700],
       ),
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      '$_counter',
-                      style: const TextStyle(
-                        fontSize: 120,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: _incrementCounter,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal[500],
-                        foregroundColor: Colors.white,
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(60),
-                        elevation: 10,
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        size: 80,
-                      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.green[50]!, Colors.green[100]!],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'استغفر الله العظيم واتوب إليه',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+                textAlign: Center,
+              ),
+              const SizedBox(height: 40),
+              Container(
+                padding: const EdgeInsets.all(40),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.green.withOpacity(0.3),
+                      blurRadius: 20,
+                      spreadRadius: 5,
                     ),
                   ],
                 ),
+                child: Text(
+                  '$_counter',
+                  style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.green[800]),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30.0),
-              child: ElevatedButton(
-                onPressed: _resetCounter,
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: _incrementCounter,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal[300],
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  elevation: 5,
+                  backgroundColor: Colors.green[600],
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
-                child: const Text(
-                  'إعادة تعيين',
-                  style: TextStyle(fontSize: 24),
-                ),
+                child: const Text('تسبيح', style: TextStyle(fontSize: 22, color: Colors.white)),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: _resetCounter,
+                child: const Text('إعادة العداد للصفر', style: TextStyle(fontSize: 16, color: Colors.red, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
         ),
       ),
     );
