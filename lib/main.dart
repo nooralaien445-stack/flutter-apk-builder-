@@ -1,111 +1,32 @@
-import 'package:flutter/material.dart';
+name: Build Flutter APK
 
-void main() {
-  runApp(const TasbihApp());
-}
+# IMPORTANT: workflow_dispatch must NOT have any inputs
+# The app pushes code directly to the repo file before triggering this workflow
+on:
+  workflow_dispatch:
 
-class TasbihApp extends StatelessWidget {
-  const TasbihApp({super.key});
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'السبحة الإلكترونية',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const TasbihCounterPage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.0"
+          channel: "stable"
 
-class TasbihCounterPage extends StatefulWidget {
-  const TasbihCounterPage({super.key});
+      - name: Install dependencies
+        run: flutter pub get
 
-  @override
-  State<TasbihCounterPage> createState() => _TasbihCounterPageState();
-}
+      - name: Build release APK
+        run: flutter build apk --release
 
-class _TasbihCounterPageState extends State<TasbihCounterPage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _resetCounter() {
-    setState(() {
-      _counter = 0;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.green[900],
-      appBar: AppBar(
-        title: const Text(
-          'السبحة الإلكترونية',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.green[800],
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '$_counter',
-              style: const TextStyle(
-                fontSize: 80,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 50),
-            SizedBox(
-              width: 200,
-              height: 200,
-              child: ElevatedButton(
-                onPressed: _incrementCounter,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green[600],
-                  foregroundColor: Colors.white,
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(20),
-                  elevation: 10,
-                ),
-                child: const Icon(
-                  Icons.add,
-                  size: 100,
-                ),
-              ),
-            ),
-            const SizedBox(height: 80),
-            ElevatedButton(
-              onPressed: _resetCounter,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[700],
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                elevation: 5,
-              ),
-              child: const Text(
-                'إعادة تعيين',
-                style: TextStyle(fontSize: 24),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
